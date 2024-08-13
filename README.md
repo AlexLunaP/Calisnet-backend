@@ -16,8 +16,7 @@
 <!-- CONTRIBUTING -->
 ## Contributing
 
-Contributions are appreaciated
-
+Contributions are appreciated!
 -   Proposing pull request to improve the code
 -   Submitting bug/issues reports
 -   Making suggestions
