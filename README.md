@@ -13,9 +13,6 @@
   </ol>
 </details>
 
-## What is Calisnet?
-Calisnet
-
 <!-- CONTRIBUTING -->
 ## Contributing
 
