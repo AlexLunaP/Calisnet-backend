@@ -1,0 +1,2 @@
+class UserWasNotFound(Exception):
+    pass
