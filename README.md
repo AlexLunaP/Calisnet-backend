@@ -14,7 +14,7 @@
 </details>
 
 ## What is Calisnet?
-Calisnet... Feel free to [contribute]().
+Calisnet
 
 <!-- CONTRIBUTING -->
 ## Contributing
