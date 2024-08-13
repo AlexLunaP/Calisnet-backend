@@ -14,7 +14,7 @@
 </details>
 
 ## What is Calisnet?
-Calisnet... Feel free to [contribute](https://github.com/alvarohghg/GymQuest/blob/main/CONTRIBUTING.md).
+Calisnet... Feel free to [contribute]().
 
 <!-- CONTRIBUTING -->
 ## Contributing
