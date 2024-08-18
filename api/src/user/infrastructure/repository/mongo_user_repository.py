@@ -26,6 +26,12 @@ class MongoUserRepository(Users):
                 "username": user.username,
                 "userEmail": user.userEmail,
                 "userPassword": user.userPassword,
+                "bio": user.bio,
+                "birthdate": user.birthdate,
+                "profilePicUrl": user.profilePicUrl,
+                "socialLinks": user.socialLinks,
+                "competitionHistory": user.competitionHistory,
+                "achievements": user.achievements,
             }
         )
 
@@ -47,10 +53,31 @@ class MongoUserRepository(Users):
             return None
         return self.__getUserFromResult(user)
 
+    def updateUserProfile(self, user: User) -> None:
+        self.__users.update_one(
+            {"userId": str(user.userId)},
+            {
+                "$set": {
+                    "bio": user.bio,
+                    "birthdate": user.birthdate,
+                    "profilePicUrl": user.profilePicUrl,
+                    "socialLinks": user.socialLinks,
+                    "competitionHistory": user.competitionHistory,
+                    "achievements": user.achievements,
+                }
+            },
+        )
+
     def __getUserFromResult(self, result: dict) -> User:
         return User(
             userId=UserId.fromString(result["userId"]),
             username=Username.fromString(result["username"]),
             userEmail=UserEmail.fromString(result["userEmail"]),
             userPassword=UserPassword.fromHash(result["userPassword"]),
+            bio=result.get("bio"),
+            birthdate=result.get("birthdate"),
+            profilePicUrl=result.get("profilePicUrl"),
+            socialLinks=result.get("socialLinks"),
+            competitionHistory=result.get("competitionHistory"),
+            achievements=result.get("achievements"),
         )

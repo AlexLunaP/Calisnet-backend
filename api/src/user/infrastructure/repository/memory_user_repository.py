@@ -28,3 +28,9 @@ class MemoryUserRepository(Users):
         for user in self.__users:
             if user.userEmail == userEmail.value:
                 return user
+
+    def updateUserProfile(self, user: User) -> None:
+        for i, existing_user in enumerate(self.__users):
+            if existing_user.userId == user.userId:
+                self.__users[i] = user
+                break

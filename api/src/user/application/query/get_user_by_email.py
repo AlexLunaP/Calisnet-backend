@@ -33,4 +33,10 @@ class GetUserByEmailHandler:
             username=user.username,
             userEmail=user.userEmail,
             userPassword=user.userPassword.decode("utf-8"),
+            bio=user.bio,
+            birthdate=str(user.birthdate),
+            profilePicUrl=user.profilePicUrl,
+            socialLinks=user.socialLinks,
+            competitionHistory=user.competitionHistory,
+            achievements=user.achievements,
         )

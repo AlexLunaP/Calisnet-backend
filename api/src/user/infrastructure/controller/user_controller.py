@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import create_access_token
 from werkzeug.exceptions import BadRequest, NotFound, Unauthorized
@@ -57,3 +59,31 @@ def login():
 
     jwt_token = create_access_token(identity=user)
     return jsonify({"access_token": jwt_token, "user": user}), 200
+
+
+@userFlaskBlueprint.route("/update/<string:userId>/", methods=["PUT"])
+def update_user_profile(userId):
+    userService: UserService = UserService()
+
+    if request.json is None:
+        raise BadRequest("No data provided for update")
+
+    bio = request.json.get("bio")
+    birthdate = request.json.get("birthdate")
+    profilePicUrl = request.json.get("profilePicUrl")
+    socialLinks = request.json.get("socialLinks")
+
+    if birthdate:
+        try:
+            birthdate = datetime.strptime(birthdate, "%d/%m/%Y")
+        except ValueError:
+            raise BadRequest("Invalid birthdate format. Use DD/MM/YYYY.")
+
+    userService.updateUserProfile(
+        userId=userId,
+        bio=bio,
+        birthdate=birthdate,
+        profilePicUrl=profilePicUrl,
+        socialLinks=socialLinks,
+    )
+    return jsonify({"message": "Profile updated successfully"}), 200

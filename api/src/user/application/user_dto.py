@@ -6,3 +6,9 @@ class UserDTO(TypedDict):
     username: str
     userEmail: str
     userPassword: str
+    bio: str
+    birthdate: str
+    profilePicUrl: str
+    socialLinks: dict
+    competitionHistory: list
+    achievements: list

@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Optional
 
 import bcrypt
@@ -5,6 +6,7 @@ from dependency_injector.wiring import Provide, inject
 from flask import jsonify
 
 from ...application.command.create_user import CreateUser
+from ...application.command.update_user_profile import UpdateUserProfile
 from ...application.query.get_user_by_email import (
     GetUserByEmailHandler,
     GetUserByEmailQuery,
@@ -24,6 +26,7 @@ class UserService:
     def __init__(self, users: Users = Provide["USERS"]):
         self.users: Users = users
         self.createUserCommand = CreateUser(users)
+        self.updateUserProfileCommand = UpdateUserProfile(users)
         self.getUserByIdHandler = GetUserByIdHandler(users)
         self.getUserByEmailHandler = GetUserByEmailHandler(users)
 
@@ -59,3 +62,20 @@ class UserService:
             )
 
         return user.userDto
+
+    def updateUserProfile(
+        self,
+        userId: str,
+        bio: str,
+        birthdate: datetime,
+        profilePicUrl: str,
+        socialLinks: dict,
+    ):
+        user = self.getUserByIdHandler.handle(GetUserByIdQuery(userId))
+
+        if not user:
+            raise UserWasNotFound(f"User was not found")
+
+        self.updateUserProfileCommand.handle(
+            userId, bio, birthdate, profilePicUrl, socialLinks
+        )

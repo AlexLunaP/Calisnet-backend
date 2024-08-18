@@ -24,3 +24,7 @@ class Users(ABC):
     @abstractmethod
     def getByEmail(self, userEmail: UserEmail) -> Optional[User]:
         raise NotImplementedError
+
+    @abstractmethod
+    def updateUserProfile(self, user: User) -> None:
+        raise NotImplementedError

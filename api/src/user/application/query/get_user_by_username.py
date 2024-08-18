@@ -30,4 +30,10 @@ class GetUserByUsernameHandler:
             "username": user.username,
             "userEmail": user.userEmail,
             "userPassword": user.userPassword,
+            "bio": user.bio,
+            "birthdate": user.birthdate,
+            "profilePicUrl": user.profilePicUrl,
+            "socialLinks": user.socialLinks,
+            "competitionHistory": user.competitionHistory,
+            "achievements": user.achievements,
         }
