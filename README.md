@@ -35,7 +35,7 @@ Check the [contributing guidelines](https://github.com/alvarohghg/GymQuest/blob/
 
 ## License
 
-Distributed under the GPL-V3 License. Check [LICENSE.txt](LICENSE.txt) for more information.
+Distributed under the GPL-V3 License. Check [LICENSE.txt](LICENSE) for more information.
 
 <!-- CONTACT -->
 
