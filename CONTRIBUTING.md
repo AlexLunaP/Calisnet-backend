@@ -1,5 +1,5 @@
 # 📖Calisnet contributing guide💪 <!-- omit in toc -->
-Firstly,thank you for considering contributing to Calisnet!
+Firstly, thanks for considering contributing to Calisnet!
 
 Contributions are aprecciated:
 
