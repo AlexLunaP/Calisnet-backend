@@ -1,7 +1,7 @@
 # Calisnet
 
 <!-- TABLE OF CONTENTS -->
-<details>
+<details open>
   <summary>Table of Contents</summary>
   <ol>
     <li><a href="#contributing">Contributing</a></li>
@@ -14,14 +14,14 @@
 
 ## Contributing
 
-Contributions are appreaciated
+Contributions are always appreaciated!
 
-- Proposing pull request to improve the code
-- Submitting bug/issues reports
-- Making suggestions
+Here are some example of contributions:
+- Proposing a pull request to improve the code
+- Submitting bug / issue reports
 - Opening a discussion
 
-Check the [contributing guidelines](https://github.com/alvarohghg/GymQuest/blob/main/CONTRIBUTING.md) for more details!
+Check our [contributing guidelines](https://github.com/alvarohghg/GymQuest/blob/main/CONTRIBUTING.md) for more details.
 
 ##### Quick contribution example:
 
@@ -41,4 +41,6 @@ Distributed under the GPL-V3 License. Check [LICENSE.txt](LICENSE) for more info
 
 ## Contact
 
-This project was developed by [Alejandro Luna](https://x.com/alexluna_7)
+Alejandro Luna [@alexluna_7](https://x.com/alexluna_7) - [alexlunapuerto@gmail.com](mailto:alexlunapuerto@gmail.com)
+
+Project link: https://github.com/AlexLunaP/Calisnet-backend
