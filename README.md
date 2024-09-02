@@ -1,4 +1,17 @@
-# Calisnet
+<!-- Title -->
+<h1 align="center">Calisnet</h1>
+
+<!-- Description -->
+<p align="center">
+  Calisthenics Competition Manager
+</p>
+
+<!-- Links -->
+<p align="center">
+  <a href="https://github.com/AlexLunaP/Calisnet-backend/issues/new?assignees=&labels=bug&projects=&template=bug_report.yml&title=%F0%9F%90%9B+%5BBUG%5D+-+%3Ctitle%3E">Report Bug</a>
+  ·
+  <a href="https://github.com/AlexLunaP/Calisnet-backend/issues/new?assignees=&labels=question&projects=&template=feature_request.yml&title=%F0%9F%92%A1+%5BREQUEST%5D+-+%3Ctitle%3E">Request Feature</a>
+</p>
 
 <!-- TABLE OF CONTENTS -->
 <details open>
