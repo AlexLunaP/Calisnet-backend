@@ -1,47 +1,59 @@
-from datetime import datetime
-
 from flask import Blueprint, jsonify, request
-from flask_jwt_extended import create_access_token
+from flask_jwt_extended import create_access_token, get_current_user, jwt_required
 from werkzeug.exceptions import BadRequest, NotFound, Unauthorized
 
-from ...application.user_dto import UserDTO
-from ...domain.exception.incorrect_password import IncorrectPassword
-from ...domain.exception.user_was_not_found import UserWasNotFound
+from ...domain.exceptions.incorrect_password import IncorrectPassword
+from ...domain.exceptions.user_was_not_found import UserWasNotFound
 from ...infrastructure.service.user_service import UserService
 
-userFlaskBlueprint = Blueprint("User", __name__, url_prefix="/user")
+user_flask_blueprint = Blueprint("user", __name__, url_prefix="/user")
 
 
-@userFlaskBlueprint.route("/create/", methods=["POST"])
+@user_flask_blueprint.route("/create/", methods=["POST"])
 def create_user():
-    userService: UserService = UserService()
+    user_service: UserService = UserService()
+    print(request.json)
 
     if request.json is None:
         raise BadRequest("No user was specified")
 
-    userJson = request.json.get("user", False)
-    if not userJson:
+    user_json = request.json.get("user", False)
+    if not user_json:
         raise BadRequest("No user was specified")
 
-    userService.createUser(userJson)
+    user_service.create_user(user_json)
     return jsonify({}), 200
 
 
-@userFlaskBlueprint.route("/get/<string:userId>/", methods=["GET"])
-def get_user(userId):
-    userService: UserService = UserService()
+@user_flask_blueprint.route("/get/<string:user_id>/", methods=["GET"])
+def get_user(user_id):
+    user_service: UserService = UserService()
 
-    if not userId:
+    if not user_id:
         raise NotFound("User ID is required")
 
-    user = userService.getUser(userId)
+    user = user_service.get_user(user_id)
     if not user:
         raise NotFound("User was not found")
 
     return jsonify(user), 200
 
 
-@userFlaskBlueprint.route("/login/", methods=["POST"])
+@user_flask_blueprint.route("/get_by_username/<string:username>/", methods=["GET"])
+def get_user_by_username(username):
+    user_service: UserService = UserService()
+
+    if not username:
+        raise NotFound("Username is required")
+
+    user = user_service.get_user_by_username(username)
+    if not user:
+        raise NotFound("User was not found")
+
+    return jsonify(user), 200
+
+
+@user_flask_blueprint.route("/login/", methods=["POST"])
 def login():
     if request.json is None:
         raise BadRequest("Email and password are required")
@@ -53,7 +65,7 @@ def login():
         raise BadRequest("Email and password are required")
 
     try:
-        user = UserService().loginUser(email, password)
+        user = UserService().login_user(email, password)
     except (IncorrectPassword, UserWasNotFound):
         raise Unauthorized("Wrong email or password")
 
@@ -61,29 +73,31 @@ def login():
     return jsonify({"access_token": jwt_token, "user": user}), 200
 
 
-@userFlaskBlueprint.route("/update/<string:userId>/", methods=["PUT"])
-def update_user_profile(userId):
-    userService: UserService = UserService()
+@user_flask_blueprint.route("/update/<string:user_id>/", methods=["PUT"])
+@jwt_required()
+def update_user_profile(user_id):
+    current_user_id: str = get_current_user()
+
+    if not current_user_id:
+        raise Unauthorized("Only logged users can update their profile")
+    if current_user_id != user_id:
+        raise Unauthorized("Not allowed to modify the profile of another user.")
+
+    user_service: UserService = UserService()
 
     if request.json is None:
         raise BadRequest("No data provided for update")
 
+    full_name = request.json.get("full_name")
     bio = request.json.get("bio")
-    birthdate = request.json.get("birthdate")
-    profilePicUrl = request.json.get("profilePicUrl")
-    socialLinks = request.json.get("socialLinks")
+    social_links = request.json.get("social_links")
+    profile_image_url = request.json.get("profile_image_url")
 
-    if birthdate:
-        try:
-            birthdate = datetime.strptime(birthdate, "%d/%m/%Y")
-        except ValueError:
-            raise BadRequest("Invalid birthdate format. Use DD/MM/YYYY.")
-
-    userService.updateUserProfile(
-        userId=userId,
+    user_service.update_user_profile(
+        user_id=user_id,
+        full_name=full_name,
         bio=bio,
-        birthdate=birthdate,
-        profilePicUrl=profilePicUrl,
-        socialLinks=socialLinks,
+        social_links=social_links,
+        profile_image_url=profile_image_url,
     )
     return jsonify({"message": "Profile updated successfully"}), 200

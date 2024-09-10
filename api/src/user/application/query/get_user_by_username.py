@@ -1,3 +1,5 @@
+from ....shared.infrastructure.media_utils import get_base64_image
+from ...application.query.get_user_response import GetUserResponse
 from ...domain.model.username import Username
 from ...domain.repository.users import Users
 
@@ -5,35 +7,38 @@ from ...domain.repository.users import Users
 class GetUserByUsernameQuery:
 
     def __init__(self, username: str):
-        self.__username: str = username
+        self.username: str = username
 
     @property
-    def username(self):
-        return self.__username
+    def get_username(self):
+        return self.username
 
 
 class GetUserByUsernameHandler:
 
     def __init__(self, users: Users):
-        self.__users: Users = users
+        self.users: Users = users
 
     def handle(self, query: GetUserByUsernameQuery):
-        username = Username.fromString(query.username)
+        username = Username.from_string(query.get_username)
 
-        user = self.__users.getByUsername(username)
+        user = self.users.get_by_username(username)
 
         if not user:
             return None
 
-        return {
-            "userId": str(user.userId),
-            "username": user.username,
-            "userEmail": user.userEmail,
-            "userPassword": user.userPassword,
-            "bio": user.bio,
-            "birthdate": user.birthdate,
-            "profilePicUrl": user.profilePicUrl,
-            "socialLinks": user.socialLinks,
-            "competitionHistory": user.competitionHistory,
-            "achievements": user.achievements,
-        }
+        if user.profile_image_url is not None:
+            profile_image_base64 = get_base64_image(user.profile_image_url)
+        else:
+            profile_image_base64 = None
+
+        return GetUserResponse(
+            user_id=str(user.user_id),
+            username=user.username,
+            user_email=user.user_email,
+            user_password=user.user_password.decode("utf-8"),
+            full_name=user.full_name,
+            bio=user.bio,
+            social_links=user.social_links,
+            profile_image_url=profile_image_base64,
+        )

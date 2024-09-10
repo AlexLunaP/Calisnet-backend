@@ -1,0 +1,2 @@
+class CompetitionIdAlreadyExists(Exception):
+    pass

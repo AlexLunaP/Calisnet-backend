@@ -14,23 +14,23 @@ class MemoryUserRepository(Users):
     def save(self, user: User) -> None:
         self.__users.append(user)
 
-    def getById(self, userId: UserId) -> Optional[User]:
+    def get_by_id(self, user_id: UserId) -> Optional[User]:
         for user in self.__users:
-            if user.userId == userId.value:
+            if user.user_id == user_id.value:
                 return user
 
-    def getByUsername(self, username: Username) -> Optional[User]:
+    def get_by_username(self, username: Username) -> Optional[User]:
         for user in self.__users:
             if user.username == username.value:
                 return user
 
-    def getByEmail(self, userEmail: UserEmail) -> Optional[User]:
+    def get_by_email(self, user_email: UserEmail) -> Optional[User]:
         for user in self.__users:
-            if user.userEmail == userEmail.value:
+            if user.user_email == user_email.value:
                 return user
 
-    def updateUserProfile(self, user: User) -> None:
+    def update_user_profile(self, user: User) -> None:
         for i, existing_user in enumerate(self.__users):
-            if existing_user.userId == user.userId:
+            if existing_user.user_id == user.user_id:
                 self.__users[i] = user
                 break

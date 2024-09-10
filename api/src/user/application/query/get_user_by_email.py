@@ -1,5 +1,3 @@
-from typing import Optional
-
 from ...application.query.get_user_response import GetUserResponse
 from ...domain.model.user_email import UserEmail
 from ...domain.repository.users import Users
@@ -7,12 +5,12 @@ from ...domain.repository.users import Users
 
 class GetUserByEmailQuery:
 
-    def __init__(self, userEmail: str):
-        self.__userEmail: str = userEmail
+    def __init__(self, user_email: str):
+        self.__user_email: str = user_email
 
     @property
-    def userEmail(self):
-        return self.__userEmail
+    def user_email(self):
+        return self.__user_email
 
 
 class GetUserByEmailHandler:
@@ -21,22 +19,20 @@ class GetUserByEmailHandler:
         self.__users: Users = users
 
     def handle(self, query: GetUserByEmailQuery):
-        userEmail = UserEmail.fromString(query.userEmail)
+        user_email = UserEmail.from_string(query.user_email)
 
-        user = self.__users.getByEmail(userEmail)
+        user = self.__users.get_by_email(user_email)
 
         if not user:
             return None
 
         return GetUserResponse(
-            userId=str(user.userId),
+            user_id=str(user.user_id),
             username=user.username,
-            userEmail=user.userEmail,
-            userPassword=user.userPassword.decode("utf-8"),
+            user_email=user.user_email,
+            user_password=user.user_password.decode("utf-8"),
+            full_name=user.full_name,
             bio=user.bio,
-            birthdate=str(user.birthdate),
-            profilePicUrl=user.profilePicUrl,
-            socialLinks=user.socialLinks,
-            competitionHistory=user.competitionHistory,
-            achievements=user.achievements,
+            social_links=user.social_links,
+            profile_image_url=user.profile_image_url,
         )

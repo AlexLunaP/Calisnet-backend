@@ -9,23 +9,23 @@ fake = faker.Faker()
 class TestUserEmail:
 
     def test_constructor(self):
-        expectedValue = fake.email()
+        expected_value = fake.email()
 
-        userEmail = UserEmail(expectedValue)
+        user_email = UserEmail(expected_value)
 
-        assert userEmail.value == expectedValue
+        assert user_email.value == expected_value
 
     def test_from_string_constructor(self):
-        expectedValue = fake.email()
+        expected_value = fake.email()
 
-        userEmail = UserEmail.fromString(expectedValue)
+        user_email = UserEmail.from_string(expected_value)
 
-        assert userEmail.value == expectedValue
+        assert user_email.value == expected_value
 
-    def test_empty_userEmail(self):
+    def test_empty_user_email(self):
         with pytest.raises(UserEmail.InvalidEmail):
             UserEmail("")
 
-    def test_bad_userEmail(self):
+    def test_bad_user_email(self):
         with pytest.raises(UserEmail.InvalidEmail):
             UserEmail("John Doe@email.com")

@@ -1,12 +1,12 @@
-from datetime import datetime
-from uuid import UUID, uuid4
+from uuid import uuid4
 
 import faker
 import pytest
-from pytest_mock import mocker
+from pytest_mock import MockerFixture
 
 from .....shared.domain.user_id import UserId
-from ....domain.exception.user_was_not_found import UserWasNotFound
+from ....domain.exceptions.user_was_not_found import UserWasNotFound
+from ....domain.model.full_name import FullName
 from ....domain.model.user_email import UserEmail
 from ....domain.model.user_password import UserPassword
 from ....domain.model.username import Username
@@ -17,7 +17,7 @@ fake = faker.Faker()
 
 
 @pytest.fixture
-def mocked_users(mocker):
+def mocked_users(mocker: MockerFixture):
     return mocker.Mock(spec=Users)
 
 
@@ -29,39 +29,40 @@ def update_user_profile_instance(mocked_users):
 class TestUpdateUserProfile:
 
     def test_update_user_profile(self, update_user_profile_instance, mocked_users):
-        userIdMock = uuid4()
+        user_id_mock = uuid4()
 
         # Mock behavior of Users repository
-        mocked_users.getById.return_value = User(
-            userId=UserId(userIdMock),
+        mocked_users.get_by_id.return_value = User(
+            user_id=UserId(user_id_mock),
             username=Username(fake.first_name()),
-            userEmail=UserEmail(fake.email()),
-            userPassword=UserPassword(fake.password()),
+            full_name=FullName(fake.first_name()),
+            user_email=UserEmail(fake.email()),
+            user_password=UserPassword(fake.password()),
         )
 
         update_user_profile_instance.handle(
-            userId=str(userIdMock),
+            user_id=str(user_id_mock),
+            full_name=fake.first_name(),
             bio=fake.text(),
-            birthdate=fake.date_of_birth().strftime("%d/%m/%Y"),
-            profilePicUrl=fake.image_url(),
-            socialLinks={"github": fake.url()},
+            social_links={"instagram": fake.url()},
+            profile_image_url=fake.image(),
         )
 
-        mocked_users.updateUserProfile.assert_called_once()
+        mocked_users.update_user_profile.assert_called_once()
 
     def test_do_not_update_user_profile_if_user_was_not_found(
         self, update_user_profile_instance, mocked_users
     ):
-        userIdMock = uuid4()
+        user_id_mock = uuid4()
 
         # Mock behavior of Users repository
-        mocked_users.getById.return_value = None
+        mocked_users.get_by_id.return_value = None
 
         with pytest.raises(UserWasNotFound):
             update_user_profile_instance.handle(
-                userId=str(userIdMock),
+                user_id=str(user_id_mock),
+                full_name=fake.first_name(),
                 bio=fake.text(),
-                birthdate=fake.date_of_birth().strftime("%d/%m/%Y"),
-                profilePicUrl=fake.image_url(),
-                socialLinks={"github": fake.url()},
+                social_links={"instagram": fake.url()},
+                profile_image_url=fake.image_url(),
             )

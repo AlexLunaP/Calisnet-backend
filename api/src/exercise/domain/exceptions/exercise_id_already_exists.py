@@ -1,0 +1,2 @@
+class ExerciseIdAlreadyExists(Exception):
+    pass

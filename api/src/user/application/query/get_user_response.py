@@ -4,85 +4,67 @@ from typing import Optional
 class GetUserResponse:
     def __init__(
         self,
-        userId: str,
+        user_id: str,
         username: str,
-        userEmail: str,
-        userPassword: str,
+        user_email: str,
+        user_password: str,
+        full_name: Optional[str] = None,
         bio: Optional[str] = None,
-        birthdate: Optional[str] = None,
-        profilePicUrl: Optional[str] = None,
-        socialLinks: Optional[dict] = None,
-        competitionHistory: Optional[list] = None,
-        achievements: Optional[list] = None,
+        profile_image_url: Optional[str] = None,
+        social_links: Optional[dict] = None,
     ):
-        self.__userId: str = userId
+        self.__user_id: str = user_id
         self.__username: str = username
-        self.__userEmail: str = userEmail
-        self.__userPassword: str = userPassword
+        self.__user_email: str = user_email
+        self.__user_password: str = user_password
+        self.__full_name: Optional[str] = full_name
         self.__bio: Optional[str] = bio if bio is not None else ""
-        self.__birthdate: Optional[str] = birthdate
-        self.__profilePicUrl: Optional[str] = profilePicUrl
-        self.__socialLinks: Optional[dict] = (
-            socialLinks if socialLinks is not None else {}
+        self.__social_links: Optional[dict] = (
+            social_links if social_links is not None else {}
         )
-        self.__competitionHistory: Optional[list] = (
-            competitionHistory if competitionHistory is not None else []
-        )
-        self.__achievements: Optional[list] = (
-            achievements if achievements is not None else []
-        )
+        self.__profile_image_url: Optional[str] = profile_image_url
 
     @property
-    def userId(self):
-        return self.__userId
+    def user_id(self):
+        return self.__user_id
 
     @property
     def username(self):
         return self.__username
 
     @property
-    def userEmail(self):
-        return self.__userEmail
+    def user_email(self):
+        return self.__user_email
 
     @property
-    def userPassword(self):
-        return self.__userPassword
+    def user_password(self):
+        return self.__user_password
+
+    @property
+    def full_name(self):
+        return self.__full_name
 
     @property
     def bio(self):
         return self.__bio
 
     @property
-    def birthdate(self):
-        return self.__birthdate
+    def social_links(self):
+        return self.__social_links
 
     @property
-    def profilePicUrl(self):
-        return self.__profilePicUrl
+    def profile_image_url(self):
+        return self.__profile_image_url
 
     @property
-    def socialLinks(self):
-        return self.__socialLinks
-
-    @property
-    def competitionHistory(self):
-        return self.__competitionHistory
-
-    @property
-    def achievements(self):
-        return self.__achievements
-
-    @property
-    def userDto(self):
+    def user_dto(self):
         return {
-            "userId": self.__userId,
+            "user_id": self.__user_id,
             "username": self.__username,
-            "userEmail": self.__userEmail,
-            "userPassword": self.__userPassword,
+            "user_email": self.__user_email,
+            "user_password": self.__user_password,
+            "full_name": self.__full_name,
             "bio": self.__bio,
-            "birthdate": self.__birthdate,
-            "profilePicUrl": self.__profilePicUrl,
-            "socialLinks": self.__socialLinks,
-            "competitionHistory": self.__competitionHistory,
-            "achievements": self.__achievements,
+            "social_links": self.__social_links,
+            "profile_image_url": self.__profile_image_url,
         }

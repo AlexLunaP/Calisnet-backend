@@ -4,7 +4,11 @@ from typing import Optional
 import pymongo
 
 from ....shared.domain.user_id import UserId
+from ...domain.model.full_name import FullName
+from ...domain.model.profile_image_url import ProfileImageUrl
+from ...domain.model.social_links import SocialLinks
 from ...domain.model.user import User
+from ...domain.model.user_bio import UserBio
 from ...domain.model.user_email import UserEmail
 from ...domain.model.user_password import UserPassword
 from ...domain.model.username import Username
@@ -22,62 +26,58 @@ class MongoUserRepository(Users):
     def save(self, user: User) -> None:
         self.__users.insert_one(
             {
-                "userId": str(user.userId),
+                "user_id": str(user.user_id),
                 "username": user.username,
-                "userEmail": user.userEmail,
-                "userPassword": user.userPassword,
+                "user_email": user.user_email,
+                "user_password": user.user_password,
+                "full_name": user.full_name,
                 "bio": user.bio,
-                "birthdate": user.birthdate,
-                "profilePicUrl": user.profilePicUrl,
-                "socialLinks": user.socialLinks,
-                "competitionHistory": user.competitionHistory,
-                "achievements": user.achievements,
+                "social_links": user.social_links,
+                "profile_image_url": user.profile_image_url,
             }
         )
 
-    def getById(self, userId: UserId) -> Optional[User]:
-        user = self.__users.find_one({"userId": str(userId.value)})
+    def get_by_id(self, user_id: UserId) -> Optional[User]:
+        user = self.__users.find_one({"user_id": str(user_id.value)})
         if not user:
             return None
-        return self.__getUserFromResult(user)
+        return self._get_user_from_result(user)
 
-    def getByUsername(self, username: Username) -> Optional[User]:
+    def get_by_username(self, username: Username) -> Optional[User]:
         user = self.__users.find_one({"username": username.value})
         if not user:
             return None
-        return self.__getUserFromResult(user)
+        return self._get_user_from_result(user)
 
-    def getByEmail(self, userEmail: UserEmail) -> Optional[User]:
-        user = self.__users.find_one({"userEmail": userEmail.value})
+    def get_by_email(self, user_email: UserEmail) -> Optional[User]:
+        user = self.__users.find_one({"user_email": user_email.value})
         if not user:
             return None
-        return self.__getUserFromResult(user)
+        return self._get_user_from_result(user)
 
-    def updateUserProfile(self, user: User) -> None:
+    def update_user_profile(self, user: User) -> None:
         self.__users.update_one(
-            {"userId": str(user.userId)},
+            {"user_id": str(user.user_id)},
             {
                 "$set": {
+                    "full_name": user.full_name,
                     "bio": user.bio,
-                    "birthdate": user.birthdate,
-                    "profilePicUrl": user.profilePicUrl,
-                    "socialLinks": user.socialLinks,
-                    "competitionHistory": user.competitionHistory,
-                    "achievements": user.achievements,
+                    "social_links": user.social_links,
+                    "profile_image_url": user.profile_image_url,
                 }
             },
         )
 
-    def __getUserFromResult(self, result: dict) -> User:
+    def _get_user_from_result(self, result: dict) -> User:
         return User(
-            userId=UserId.fromString(result["userId"]),
-            username=Username.fromString(result["username"]),
-            userEmail=UserEmail.fromString(result["userEmail"]),
-            userPassword=UserPassword.fromHash(result["userPassword"]),
-            bio=result.get("bio"),
-            birthdate=result.get("birthdate"),
-            profilePicUrl=result.get("profilePicUrl"),
-            socialLinks=result.get("socialLinks"),
-            competitionHistory=result.get("competitionHistory"),
-            achievements=result.get("achievements"),
+            user_id=UserId.from_string(result["user_id"]),
+            username=Username.from_string(result["username"]),
+            user_email=UserEmail.from_string(result["user_email"]),
+            user_password=UserPassword.from_hash(result["user_password"]),
+            full_name=FullName.from_string(result["full_name"]),
+            bio=UserBio.from_string(result["bio"]) if result["bio"] else None,
+            social_links=SocialLinks.from_dict(
+                result["social_links"] if result["social_links"] else {}
+            ),
+            profile_image_url=ProfileImageUrl.from_string(result["profile_image_url"]),
         )

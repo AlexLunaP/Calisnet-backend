@@ -14,17 +14,17 @@ class Users(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def getById(self, userId: UserId) -> Optional[User]:
+    def get_by_id(self, user_id: UserId) -> Optional[User]:
         raise NotImplementedError
 
     @abstractmethod
-    def getByUsername(self, username: Username) -> Optional[User]:
+    def get_by_username(self, username: Username) -> Optional[User]:
         raise NotImplementedError
 
     @abstractmethod
-    def getByEmail(self, userEmail: UserEmail) -> Optional[User]:
+    def get_by_email(self, user_email: UserEmail) -> Optional[User]:
         raise NotImplementedError
 
     @abstractmethod
-    def updateUserProfile(self, user: User) -> None:
+    def update_user_profile(self, user: User) -> None:
         raise NotImplementedError

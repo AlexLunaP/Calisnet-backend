@@ -1,0 +1,2 @@
+class ParticipantAlreadyExists(Exception):
+    pass

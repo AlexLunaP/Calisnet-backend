@@ -1,0 +1,2 @@
+class InvalidCompetitionStatus(Exception):
+    pass

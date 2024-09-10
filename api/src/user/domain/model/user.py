@@ -1,9 +1,10 @@
-from datetime import datetime
-from typing import Dict, List, Optional
+from typing import Optional
 
 from ....shared.domain.user_id import UserId
-from .achievement import Achievement
-from .competition_history_entry import CompetitionHistoryEntry
+from .full_name import FullName
+from .profile_image_url import ProfileImageUrl
+from .social_links import SocialLinks
+from .user_bio import UserBio
 from .user_email import UserEmail
 from .user_password import UserPassword
 from .username import Username
@@ -13,81 +14,81 @@ class User:
 
     def __init__(
         self,
-        userId: UserId,
+        user_id: UserId,
         username: Username,
-        userEmail: UserEmail,
-        userPassword: UserPassword,
-        bio: Optional[str] = None,
-        birthdate: Optional[datetime] = None,
-        profilePicUrl: Optional[str] = None,
-        socialLinks: Optional[Dict[str, str]] = None,
-        competitionHistory: Optional[List[CompetitionHistoryEntry]] = None,
-        achievements: Optional[List[Achievement]] = None,
+        user_email: UserEmail,
+        user_password: UserPassword,
+        full_name: FullName,
+        bio: Optional[UserBio] = None,
+        social_links: Optional[SocialLinks] = None,
+        profile_image_url: Optional[ProfileImageUrl] = None,
     ):
-        self._userId: UserId = userId
+        self._user_id: UserId = user_id
         self._username: Username = username
-        self._userEmail: UserEmail = userEmail
-        self._password = userPassword
-        self._bio: str | None = bio
-        self._birthdate: datetime | None = birthdate
-        self._profilePicUrl: str | None = profilePicUrl
-        self._socialLinks = socialLinks
-        self._competitionHistory = competitionHistory
-        self._achievements = achievements
+        self._user_email: UserEmail = user_email
+        self._password = user_password
+        self._full_name: FullName = full_name
+        self._bio: UserBio | None = bio
+        self._social_links: SocialLinks | None = social_links
+        self._profile_image_url: ProfileImageUrl | None = profile_image_url
 
     @property
-    def userId(self):
-        return self._userId.value
+    def user_id(self):
+        return self._user_id.value
 
     @property
     def username(self):
         return self._username.value
 
     @property
-    def userEmail(self):
-        return self._userEmail.value
+    def user_email(self):
+        return self._user_email.value
 
     @property
-    def userPassword(self):
+    def user_password(self):
         return self._password.value
 
     @property
+    def full_name(self):
+        return self._full_name.value
+
+    @property
     def bio(self):
-        return self._bio
+        return self._bio.value if self._bio else None
 
     @property
-    def birthdate(self):
-        return self._birthdate
+    def social_links(self):
+        return self._social_links.to_dict() if self._social_links else None
 
     @property
-    def profilePicUrl(self):
-        return self._profilePicUrl
+    def profile_image_url(self):
+        return self._profile_image_url.value if self._profile_image_url else None
 
-    @property
-    def socialLinks(self):
-        return self._socialLinks
+    @classmethod
+    def add(
+        cls,
+        user_id: UserId,
+        username: Username,
+        user_email: UserEmail,
+        user_password: UserPassword,
+        full_name: FullName,
+    ) -> "User":
+        return cls(
+            user_id=user_id,
+            username=username,
+            user_email=user_email,
+            user_password=user_password,
+            full_name=full_name,
+        )
 
-    @property
-    def competitionHistory(self):
-        return self._competitionHistory
+    def update_full_name(self, full_name: FullName):
+        self._full_name = full_name
 
-    @property
-    def achievements(self):
-        return self._achievements
-
-    def updateBio(self, bio: Optional[str]):
+    def update_bio(self, bio: Optional[UserBio]):
         self._bio = bio
 
-    def updateBirthdate(self, birthdate: Optional[datetime]):
-        self._birthdate = birthdate
+    def update_social_links(self, social_links: Optional[SocialLinks]):
+        self._social_links = social_links
 
-    def updateProfilePicUrl(self, profilePicUrl: Optional[str]):
-        self._profilePicUrl = profilePicUrl
-
-    def updateSocialLinks(self, socialLinks: Optional[Dict[str, str]]):
-        self._socialLinks = socialLinks
-
-    def updateCompetitionHistory(
-        self, competitionHistory: Optional[List[CompetitionHistoryEntry]]
-    ):
-        self._competitionHistory = competitionHistory
+    def update_profile_image_url(self, profile_image_url: Optional[ProfileImageUrl]):
+        self._profile_image_url = profile_image_url

@@ -8,18 +8,18 @@ class UserPassword:
 
     def __hash_password(self, password: str) -> bytes:
         salt = bcrypt.gensalt()
-        hashedPassword = bcrypt.hashpw(password.encode("utf-8"), salt)
-        return hashedPassword
+        hashed_password = bcrypt.hashpw(password.encode("utf-8"), salt)
+        return hashed_password
 
     @staticmethod
-    def fromString(password: str):
+    def from_string(password: str):
         return UserPassword(password)
 
     @staticmethod
-    def fromHash(hashedPassword: bytes):
-        userPassword = UserPassword("")
-        userPassword.__value = hashedPassword
-        return userPassword
+    def from_hash(hashed_password: bytes):
+        user_password = UserPassword("")
+        user_password.__value = hashed_password
+        return user_password
 
     @property
     def value(self):

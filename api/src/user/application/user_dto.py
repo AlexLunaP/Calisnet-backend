@@ -2,13 +2,11 @@ from typing import TypedDict
 
 
 class UserDTO(TypedDict):
-    userId: str
+    user_id: str
+    user_email: str
+    user_password: str
     username: str
-    userEmail: str
-    userPassword: str
+    full_name: str
     bio: str
-    birthdate: str
-    profilePicUrl: str
-    socialLinks: dict
-    competitionHistory: list
-    achievements: list
+    profile_pic_url: str
+    social_links: dict

@@ -1,5 +1,4 @@
 import bcrypt
-import pytest
 
 from ..user_password import UserPassword
 
@@ -12,14 +11,14 @@ class TestUserPassword:
         assert bcrypt.checkpw("password".encode("utf-8"), password.value)
 
     def test_from_string_constructor(self):
-        password = UserPassword.fromString("password")
+        password = UserPassword.from_string("password")
 
         assert bcrypt.checkpw("password".encode("utf-8"), password.value)
 
     def test_from_hash_constructor(self):
         salt = bcrypt.gensalt()
-        hashedPassword = bcrypt.hashpw("password".encode("utf-8"), salt)
+        hashed_password = bcrypt.hashpw("password".encode("utf-8"), salt)
 
-        password = UserPassword.fromHash(hashedPassword)
+        password = UserPassword.from_hash(hashed_password)
 
         assert bcrypt.checkpw("password".encode("utf-8"), password.value)
