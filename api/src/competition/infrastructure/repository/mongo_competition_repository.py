@@ -51,7 +51,7 @@ class MongoCompetitionRepository(Competitions):
         return self._get_competition_from_result(competition)
 
     def get_all(self) -> List[CompetitionDTO] | None:
-        competitions = self.__competitions.find()
+        competitions = self.__competitions.find().sort("date", pymongo.DESCENDING)
 
         if not competitions:
             return None
@@ -79,7 +79,7 @@ class MongoCompetitionRepository(Competitions):
     def get_by_status(self, competition_status: str) -> List[CompetitionDTO] | None:
         competitions = self.__competitions.find(
             {"status": {"$regex": f"^{competition_status}$", "$options": "i"}}
-        )
+        ).sort("date", pymongo.DESCENDING)
 
         if not competitions:
             return None
@@ -107,7 +107,7 @@ class MongoCompetitionRepository(Competitions):
 
         competitions = self.__competitions.find(
             {"organizer_id": str(organizer_id.value)}
-        )
+        ).sort("date", pymongo.DESCENDING)
 
         if not competitions:
             return None
