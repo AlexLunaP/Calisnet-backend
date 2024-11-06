@@ -22,3 +22,7 @@ class Exercises(ABC):
         self, competition_id: CompetitionId
     ) -> Optional[List[ExerciseDTO]]:
         raise NotImplementedError
+
+    @abstractmethod
+    def delete_exercise(self, exercise_id: ExerciseId) -> None:
+        raise NotImplementedError
