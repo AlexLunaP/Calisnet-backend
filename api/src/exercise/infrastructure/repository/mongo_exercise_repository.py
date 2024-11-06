@@ -76,3 +76,6 @@ class MongoExerciseRepository(Exercises):
             reps=ExerciseReps(result["reps"]),
             execution_order=ExecutionOrder(result["execution_order"]),
         )
+
+    def delete_exercise(self, exercise_id: ExerciseId) -> None:
+        self.__exercises.delete_one({"exercise_id": str(exercise_id.value)})

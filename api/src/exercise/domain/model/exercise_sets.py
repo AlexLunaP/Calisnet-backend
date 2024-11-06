@@ -16,7 +16,7 @@ class ExerciseSets:
         return self.__exercise_sets
 
     def __validate_exercise_sets(self, exercise_sets: int):
-        if exercise_sets < 1:
+        if int(exercise_sets) < 1:
             raise self.invalidExerciseSets(
                 "Exercise number of sets must be greater than 0"
             )

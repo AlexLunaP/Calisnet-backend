@@ -16,7 +16,7 @@ class ExerciseReps:
         return self.__exercise_reps
 
     def __validate_exercise_reps(self, exercise_reps: int):
-        if exercise_reps < 1:
+        if int(exercise_reps) < 1:
             raise self.invalidExerciseReps(
                 "Exercise number of repetitions must be greater than 0"
             )

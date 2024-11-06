@@ -16,5 +16,5 @@ class ExecutionOrder:
         return self.__execution_order
 
     def __validate_execution_order(self, execution_order: int):
-        if execution_order < 1:
+        if int(execution_order) < 1:
             raise self.invalidExecutionOrder("Execution order must be greater than 0")
