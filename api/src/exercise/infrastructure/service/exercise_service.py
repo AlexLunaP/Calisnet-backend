@@ -1,6 +1,10 @@
+from typing import Optional
+from uuid import uuid4
+
 from dependency_injector.wiring import Provide, inject
 
 from ...application.command.create_exercise import CreateExercise
+from ...application.command.delete_exercise import DeleteExercise
 from ...application.exercise_dto import ExerciseDTO
 from ...application.query.get_exercise_by_id import (
     GetExerciseByIdHandler,
@@ -23,9 +27,10 @@ class ExerciseService:
         self.get_exercises_by_competition_id_handler = (
             GetExercisesByCompetitionIdHandler(exercises)
         )
+        self.delete_exercise_command = DeleteExercise(exercises)
 
     def create_exercise(self, exercise_dto: ExerciseDTO):
-        exercise_id = exercise_dto["exercise_id"]
+        exercise_id = str(uuid4())
         competition_id = exercise_dto["competition_id"]
         name = exercise_dto["name"]
         sets = exercise_dto["sets"]
@@ -51,12 +56,24 @@ class ExerciseService:
 
         return exercise.exercise_dto
 
-    def get_exercises_by_competition(self, competition_id: str):
-        exercises = self.get_exercises_by_competition_id_handler.handle(
-            GetExercisesByCompetitionIdQuery(competition_id)
-        )
+    def get_exercises(
+        self,
+        competition_id: Optional[str] = None,
+    ):
+        exercises = None
+
+        if competition_id:
+            exercises = self.get_exercises_by_competition_id_handler.handle(
+                GetExercisesByCompetitionIdQuery(competition_id)
+            )
 
         if not exercises:
             return None
 
         return exercises.exercises
+
+    def delete_exercise(
+        self,
+        exercise_id: str,
+    ):
+        self.delete_exercise_command.handle(exercise_id)

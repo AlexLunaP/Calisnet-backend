@@ -60,11 +60,9 @@ class MongoParticipantRepository(Participants):
     def get_by_participant_id(
         self, participant_id: ParticipantId
     ) -> List[ParticipantDTO] | None:
-
         participants = self.__participants.find(
             {"participant_id": str(participant_id.value)}
         )
-
         if not participants:
             return None
 

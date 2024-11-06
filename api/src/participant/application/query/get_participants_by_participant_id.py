@@ -33,8 +33,8 @@ class GetParticipantsByParticipantIdHandler:
         if not participants:
             return None
 
-        get_participants_by_competition_id_response = (
+        get_participants_by_participant_id_response = (
             GetParticipantsByParticipantIdResponse(participants)
         )
 
-        return get_participants_by_competition_id_response
+        return get_participants_by_participant_id_response

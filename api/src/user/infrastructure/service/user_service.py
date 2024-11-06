@@ -1,4 +1,5 @@
 from typing import Optional
+from uuid import uuid4
 
 import bcrypt
 from dependency_injector.wiring import Provide, inject
@@ -32,7 +33,7 @@ class UserService:
         self.get_user_by_username_handler = GetUserByUsernameHandler(users)
 
     def create_user(self, user_dto: dict):
-        user_id = user_dto["userId"]
+        user_id = str(uuid4())
         username = user_dto["username"]
         user_email = user_dto["userEmail"]
         user_password = user_dto["userPassword"]
@@ -57,23 +58,6 @@ class UserService:
 
         return user.user_dto
 
-    def login_user(self, user_email: str, user_password: str):
-        user: Optional[GetUserResponse] = self.get_user_by_email_handler.handle(
-            GetUserByEmailQuery(user_email)
-        )
-
-        if not user:
-            raise UserWasNotFound(f"User with email {user_email} was not found")
-
-        if not bcrypt.checkpw(
-            user_password.encode("utf-8"), user.user_password.encode("utf-8")
-        ):
-            raise IncorrectPassword(
-                f"Incorrect password for user with email {user_email}"
-            )
-
-        return user.user_dto
-
     def update_user_profile(
         self,
         user_id: str,
@@ -90,3 +74,20 @@ class UserService:
         self.update_user_profile_command.handle(
             user_id, full_name, bio, social_links, profile_image_url
         )
+
+    def login_user(self, user_email: str, user_password: str):
+        user: Optional[GetUserResponse] = self.get_user_by_email_handler.handle(
+            GetUserByEmailQuery(user_email)
+        )
+
+        if not user:
+            raise UserWasNotFound(f"User with email {user_email} was not found")
+
+        if not bcrypt.checkpw(
+            user_password.encode("utf-8"), user.user_password.encode("utf-8")
+        ):
+            raise IncorrectPassword(
+                f"Incorrect password for user with email {user_email}"
+            )
+
+        return user.user_dto

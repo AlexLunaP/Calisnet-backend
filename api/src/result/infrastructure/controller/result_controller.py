@@ -7,10 +7,10 @@ from .....src.competition.infrastructure.controller.competition_controller impor
 )
 from ..service.result_service import ResultService
 
-result_flask_blueprint = Blueprint("result", __name__, url_prefix="/result")
+result_flask_blueprint = Blueprint("results", __name__, url_prefix="/results")
 
 
-@result_flask_blueprint.route("/create/", methods=["POST"])
+@result_flask_blueprint.route("", methods=["POST"])
 @jwt_required()
 def create_result():
     result_service: ResultService = ResultService()
@@ -28,7 +28,7 @@ def create_result():
     return jsonify({}), 200
 
 
-@result_flask_blueprint.route("/get/<string:result_id>/", methods=["GET"])
+@result_flask_blueprint.route("/<string:result_id>", methods=["GET"])
 def get_result(result_id: str):
     result_service: ResultService = ResultService()
 
@@ -43,40 +43,21 @@ def get_result(result_id: str):
     return jsonify(result), 200
 
 
-@result_flask_blueprint.route("/competition/<string:competition_id>/", methods=["GET"])
-def get_all_by_competition_id(competition_id):
+@result_flask_blueprint.route("", methods=["GET"])
+def get_results():
+    competition_id = request.args.get("competition_id")
+    participant_id = request.args.get("participant_id")
+
     result_service: ResultService = ResultService()
-
-    print(competition_id)
-    print("\n")
-    print("\n")
-    print("\n")
-    print("\n")
-    if not competition_id:
-        raise BadRequest("Competition ID is required")
-
-    results = result_service.get_results_by_competition(competition_id)
+    results = result_service.get_results(
+        competition_id=competition_id, participant_id=participant_id
+    )
     if not results:
-        raise NotFound("No results were found for this competition")
-
+        raise NotFound("No results were found")
     return jsonify(results), 200
 
 
-@result_flask_blueprint.route("/participant/<string:participant_id>/", methods=["GET"])
-def get_all_by_participant_id(participant_id):
-    result_service: ResultService = ResultService()
-
-    if not participant_id:
-        raise BadRequest("Participant ID is required")
-
-    results = result_service.get_results_by_participant(participant_id)
-    if not results:
-        raise NotFound("No results were found for this participant_id")
-
-    return jsonify(results), 200
-
-
-@result_flask_blueprint.route("/update/<string:result_id>/", methods=["PUT"])
+@result_flask_blueprint.route("/<string:result_id>", methods=["PUT"])
 @jwt_required()
 def update_result(result_id):
 

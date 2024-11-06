@@ -1,3 +1,6 @@
+from typing import Optional
+from uuid import uuid4
+
 from dependency_injector.wiring import Provide, inject
 
 from ...application.command.create_result import CreateResult
@@ -34,7 +37,7 @@ class ResultService:
         self.update_result_command = UpdateResult(results)
 
     def create_result(self, result_dto: ResultDTO):
-        result_id = result_dto["result_id"]
+        result_id = str(uuid4())
         competition_id = result_dto["competition_id"]
         participant_id = result_dto["participant_id"]
         result_time = result_dto["result_time"]
@@ -58,20 +61,22 @@ class ResultService:
 
         return result.result_dto
 
-    def get_results_by_competition(self, competition_id: str):
-        results = self.get_results_by_competition_id_handler.handle(
-            GetResultsByCompetitionIdQuery(competition_id)
-        )
+    def get_results(
+        self,
+        competition_id: Optional[str] = None,
+        participant_id: Optional[str] = None,
+    ):
+        results = None
 
-        if not results:
-            return None
+        if competition_id:
+            results = self.get_results_by_competition_id_handler.handle(
+                GetResultsByCompetitionIdQuery(competition_id)
+            )
 
-        return results.results
-
-    def get_results_by_participant(self, participant_id: str):
-        results = self.get_results_by_participant_id_handler.handle(
-            GetResultsByParticipantIdQuery(participant_id)
-        )
+        elif participant_id:
+            results = self.get_results_by_participant_id_handler.handle(
+                GetResultsByParticipantIdQuery(participant_id)
+            )
 
         if not results:
             return None

@@ -1,0 +1,2 @@
+class InvalidCompetitionDate(Exception):
+    pass

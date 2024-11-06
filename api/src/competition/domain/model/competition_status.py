@@ -15,11 +15,12 @@ class CompetitionStatus(Enum):
     @classmethod
     def from_string(cls, status: str) -> "CompetitionStatus":
         status_map = {
-            "Open": cls.OPEN,
-            "Started": cls.STARTED,
-            "Finished": cls.FINISHED,
-            "Cancelled": cls.CANCELLED,
+            "open": cls.OPEN,
+            "started": cls.STARTED,
+            "finished": cls.FINISHED,
+            "cancelled": cls.CANCELLED,
         }
+        status = status.lower()
         try:
             return status_map[status]
         except KeyError:

@@ -1,3 +1,5 @@
+from typing import Optional
+
 from dependency_injector.wiring import Provide, inject
 
 from ...application.command.create_participant import CreateParticipant
@@ -39,20 +41,20 @@ class ParticipantService:
             name,
         )
 
-    def get_participants_by_competition(self, competition_id: str):
-        participants = self.get_participants_by_competition_id_handler.handle(
-            GetParticipantsByCompetitionIdQuery(competition_id)
-        )
+    def get_participants(
+        self, competition_id: Optional[str] = None, participant_id: Optional[str] = None
+    ):
+        participants = None
 
-        if not participants:
-            return None
+        if competition_id is not None:
+            participants = self.get_participants_by_competition_id_handler.handle(
+                GetParticipantsByCompetitionIdQuery(competition_id)
+            )
 
-        return participants.participants
-
-    def get_participants_by_participant(self, participant_id: str):
-        participants = self.get_participants_by_participant_id_handler.handle(
-            GetParticipantsByParticipantIdQuery(participant_id)
-        )
+        elif participant_id is not None:
+            participants = self.get_participants_by_participant_id_handler.handle(
+                GetParticipantsByParticipantIdQuery(participant_id)
+            )
 
         if not participants:
             return None

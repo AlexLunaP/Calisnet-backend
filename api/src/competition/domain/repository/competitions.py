@@ -5,6 +5,7 @@ from ....shared.domain.competition_id import CompetitionId
 from ....shared.domain.user_id import UserId
 from ...application.competition_dto import CompetitionDTO
 from ..model.competition import Competition
+from ..model.competition_status import CompetitionStatus
 
 
 class Competitions(ABC):
@@ -22,7 +23,9 @@ class Competitions(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def get_by_status(self, competition_status: str) -> Optional[List[CompetitionDTO]]:
+    def get_by_status(
+        self, competition_status: CompetitionStatus
+    ) -> Optional[List[CompetitionDTO]]:
         raise NotImplementedError
 
     @abstractmethod

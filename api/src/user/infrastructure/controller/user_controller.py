@@ -6,13 +6,12 @@ from ...domain.exceptions.incorrect_password import IncorrectPassword
 from ...domain.exceptions.user_was_not_found import UserWasNotFound
 from ...infrastructure.service.user_service import UserService
 
-user_flask_blueprint = Blueprint("user", __name__, url_prefix="/user")
+user_flask_blueprint = Blueprint("users", __name__, url_prefix="/users")
 
 
-@user_flask_blueprint.route("/create/", methods=["POST"])
+@user_flask_blueprint.route("", methods=["POST"])
 def create_user():
     user_service: UserService = UserService()
-    print(request.json)
 
     if request.json is None:
         raise BadRequest("No user was specified")
@@ -25,7 +24,7 @@ def create_user():
     return jsonify({}), 200
 
 
-@user_flask_blueprint.route("/get/<string:user_id>/", methods=["GET"])
+@user_flask_blueprint.route("/<string:user_id>", methods=["GET"])
 def get_user(user_id):
     user_service: UserService = UserService()
 
@@ -39,7 +38,7 @@ def get_user(user_id):
     return jsonify(user), 200
 
 
-@user_flask_blueprint.route("/get_by_username/<string:username>/", methods=["GET"])
+@user_flask_blueprint.route("/username/<string:username>", methods=["GET"])
 def get_user_by_username(username):
     user_service: UserService = UserService()
 
@@ -53,27 +52,7 @@ def get_user_by_username(username):
     return jsonify(user), 200
 
 
-@user_flask_blueprint.route("/login/", methods=["POST"])
-def login():
-    if request.json is None:
-        raise BadRequest("Email and password are required")
-
-    email = request.json.get("userEmail", "").strip()
-    password = request.json.get("userPassword", "").strip()
-
-    if not email or not password:
-        raise BadRequest("Email and password are required")
-
-    try:
-        user = UserService().login_user(email, password)
-    except (IncorrectPassword, UserWasNotFound):
-        raise Unauthorized("Wrong email or password")
-
-    jwt_token = create_access_token(identity=user)
-    return jsonify({"access_token": jwt_token, "user": user}), 200
-
-
-@user_flask_blueprint.route("/update/<string:user_id>/", methods=["PUT"])
+@user_flask_blueprint.route("/<string:user_id>/", methods=["PUT"])
 @jwt_required()
 def update_user_profile(user_id):
     current_user_id: str = get_current_user()
@@ -101,3 +80,23 @@ def update_user_profile(user_id):
         profile_image_url=profile_image_url,
     )
     return jsonify({"message": "Profile updated successfully"}), 200
+
+
+@user_flask_blueprint.route("/login", methods=["POST"])
+def login():
+    if request.json is None:
+        raise BadRequest("Email and password are required")
+
+    email = request.json.get("userEmail", "").strip()
+    password = request.json.get("userPassword", "").strip()
+
+    if not email or not password:
+        raise BadRequest("Email and password are required")
+
+    try:
+        user = UserService().login_user(email, password)
+    except (IncorrectPassword, UserWasNotFound):
+        raise Unauthorized("Wrong email or password")
+
+    jwt_token = create_access_token(identity=user)
+    return jsonify({"access_token": jwt_token, "user": user}), 200
