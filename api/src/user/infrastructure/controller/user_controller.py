@@ -11,8 +11,6 @@ user_flask_blueprint = Blueprint("users", __name__, url_prefix="/users")
 
 @user_flask_blueprint.route("", methods=["POST"])
 def create_user():
-    user_service: UserService = UserService()
-
     if request.json is None:
         raise BadRequest("No user was specified")
 
@@ -20,17 +18,17 @@ def create_user():
     if not user_json:
         raise BadRequest("No user was specified")
 
+    user_service: UserService = UserService()
     user_service.create_user(user_json)
     return jsonify({}), 200
 
 
 @user_flask_blueprint.route("/<string:user_id>", methods=["GET"])
 def get_user(user_id):
-    user_service: UserService = UserService()
-
     if not user_id:
         raise NotFound("User ID is required")
 
+    user_service: UserService = UserService()
     user = user_service.get_user(user_id)
     if not user:
         raise NotFound("User was not found")
@@ -40,11 +38,10 @@ def get_user(user_id):
 
 @user_flask_blueprint.route("/username/<string:username>", methods=["GET"])
 def get_user_by_username(username):
-    user_service: UserService = UserService()
-
     if not username:
         raise NotFound("Username is required")
 
+    user_service: UserService = UserService()
     user = user_service.get_user_by_username(username)
     if not user:
         raise NotFound("User was not found")
@@ -56,11 +53,8 @@ def get_user_by_username(username):
 @jwt_required()
 def update_user_profile(user_id):
     current_user_id: str = get_current_user()
-
     if not current_user_id:
         raise Unauthorized("Only logged users can update their profile")
-    if current_user_id != user_id:
-        raise Unauthorized("Not allowed to modify the profile of another user.")
 
     user_service: UserService = UserService()
 

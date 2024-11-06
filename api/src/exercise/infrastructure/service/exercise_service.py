@@ -2,7 +2,12 @@ from typing import Optional
 from uuid import uuid4
 
 from dependency_injector.wiring import Provide, inject
+from flask_jwt_extended import get_current_user
+from werkzeug.exceptions import NotFound, Unauthorized
 
+from ....competition.infrastructure.service.competition_service import (
+    CompetitionService,
+)
 from ...application.command.create_exercise import CreateExercise
 from ...application.command.delete_exercise import DeleteExercise
 from ...application.exercise_dto import ExerciseDTO
@@ -72,8 +77,18 @@ class ExerciseService:
 
         return exercises.exercises
 
-    def delete_exercise(
-        self,
-        exercise_id: str,
-    ):
+    def delete_exercise(self, exercise_id: str):
+        exercise = self.get_exercise(exercise_id)
+        if not exercise:
+            raise NotFound("Exercise was not found")
+
+        competition_service: CompetitionService = CompetitionService()
+        competition = competition_service.get_competition(exercise["competition_id"])
+        if not competition:
+            raise NotFound("Competition was not found")
+
+        current_user_id: str = get_current_user()
+        if current_user_id != competition["organizer_id"]:
+            raise Unauthorized("Not allowed to modify the competition of another user.")
+
         self.delete_exercise_command.handle(exercise_id)

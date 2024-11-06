@@ -3,6 +3,8 @@ from uuid import uuid4
 
 import bcrypt
 from dependency_injector.wiring import Provide, inject
+from flask_jwt_extended import get_current_user
+from werkzeug.exceptions import Unauthorized
 
 from ...application.command.create_user import CreateUser
 from ...application.command.update_user_profile import UpdateUserProfile
@@ -67,9 +69,12 @@ class UserService:
         profile_image_url: str,
     ):
         user = self.get_user_by_id_handler.handle(GetUserByIdQuery(user_id))
-
         if not user:
             raise UserWasNotFound(f"User with ID {user_id} was not found")
+
+        current_user_id: str = get_current_user()
+        if current_user_id != user_id:
+            raise Unauthorized("Not allowed to modify the profile of another user.")
 
         self.update_user_profile_command.handle(
             user_id, full_name, bio, social_links, profile_image_url

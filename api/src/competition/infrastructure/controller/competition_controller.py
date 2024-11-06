@@ -12,8 +12,6 @@ competition_flask_blueprint = Blueprint(
 @competition_flask_blueprint.route("", methods=["POST"])
 @jwt_required()
 def create_competition():
-    competition_service: CompetitionService = CompetitionService()
-
     if request.json is None:
         raise BadRequest("No competition was specified")
 
@@ -21,17 +19,18 @@ def create_competition():
     if not competition_json:
         raise BadRequest("No competition was specified")
 
+    competition_service: CompetitionService = CompetitionService()
     user_id = competition_service.create_competition(competition_json)
+
     return jsonify(user_id), 200
 
 
 @competition_flask_blueprint.route("/<string:competition_id>", methods=["GET"])
 def get_competition(competition_id):
-    competition_service: CompetitionService = CompetitionService()
-
     if not competition_id:
         raise BadRequest("Competition ID is required")
 
+    competition_service: CompetitionService = CompetitionService()
     competition = competition_service.get_competition(competition_id)
     if not competition:
         raise NotFound("Competition was not found")
@@ -50,35 +49,24 @@ def get_competitions():
     )
     if not competitions:
         raise NotFound("No competitions were found")
+
     return jsonify(competitions), 200
 
 
 @competition_flask_blueprint.route("/<string:competition_id>/", methods=["PUT"])
 @jwt_required()
 def update_competition(competition_id):
-
     current_user_id: str = get_current_user()
-
     if not current_user_id:
         raise Unauthorized("Only logged users can update a competition")
 
     if not competition_id:
         raise BadRequest("Competition ID is required")
 
-    competition_service: CompetitionService = CompetitionService()
-    competition = competition_service.get_competition(competition_id)
-
-    if not competition:
-        raise NotFound("Competition was not found")
-
-    print(competition)
-
-    if current_user_id != competition["organizer_id"]:
-        raise Unauthorized("Not allowed to modify the competition of another user.")
-
     if request.json is None:
         raise BadRequest("No data provided for update")
 
+    competition_service: CompetitionService = CompetitionService()
     competition_service.update_competition(request.json)
 
     return jsonify({"message": "Competition updated successfully"}), 200
