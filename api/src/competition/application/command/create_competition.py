@@ -1,8 +1,11 @@
+from datetime import datetime
+
 from ....shared.domain.competition_id import CompetitionId
 from ....shared.domain.user_id import UserId
 from ...domain.exceptions.competition_id_already_exists import (
     CompetitionIdAlreadyExists,
 )
+from ...domain.exceptions.invalid_competition_date import InvalidCompetitionDate
 from ...domain.model.competition import Competition
 from ...domain.model.competition_date import CompetitionDate
 from ...domain.model.competition_description import CompetitionDescription
@@ -35,16 +38,20 @@ class CreateCompetition:
     ):
 
         competition_id_object = CompetitionId.from_string(competition_id)
+        competition_date_object = CompetitionDate.from_string(date)
 
         if self.competitions.get_by_id(competition_id_object):
             raise CompetitionIdAlreadyExists("The competition ID already exists")
+
+        if competition_date_object.value < datetime.now():
+            raise InvalidCompetitionDate("The date cannot be in the past")
 
         competition = Competition.add(
             competition_id=competition_id_object,
             organizer_id=UserId.from_string(organizer_id),
             name=CompetitionName.from_string(name),
             description=CompetitionDescription.from_string(description),
-            date=CompetitionDate.from_string(date),
+            date=competition_date_object,
             location=CompetitionLocation.from_string(location),
             image=CompetitionImageUrl.from_string(image),
             participant_limit=ParticipantLimit(participant_limit),

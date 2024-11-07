@@ -1,5 +1,8 @@
+from datetime import datetime
+
 from ....shared.domain.competition_id import CompetitionId
 from ...domain.exceptions.competition_was_not_found import CompetitionWasNotFound
+from ...domain.exceptions.invalid_competition_date import InvalidCompetitionDate
 from ...domain.model.competition_date import CompetitionDate
 from ...domain.model.competition_description import CompetitionDescription
 from ...domain.model.competition_image_url import CompetitionImageUrl
@@ -28,10 +31,15 @@ class UpdateCompetition:
         status: str,
     ):
         competition_id_object = CompetitionId.from_string(competition_id)
+        print(f"Date type: {type(date)}, Date value: {date}")  # Debug statement
+        competition_date_object = CompetitionDate.from_string(date)
         competition = self.competitions.get_by_id(competition_id_object)
 
         if not competition:
             raise CompetitionWasNotFound("The competition was not found")
+
+        if competition_date_object.value < datetime.now():
+            raise InvalidCompetitionDate("The date cannot be in the past")
 
         if name:
             competition.update_name(CompetitionName.from_string(name))
@@ -40,7 +48,7 @@ class UpdateCompetition:
                 CompetitionDescription.from_string(description)
             )
         if date:
-            competition.update_date(CompetitionDate.from_string(date))
+            competition.update_date(competition_date_object)
         if location:
             competition.update_location(CompetitionLocation.from_string(location))
         if image:
@@ -51,7 +59,5 @@ class UpdateCompetition:
             competition.update_penalty_time(PenaltyTime(penalty_time))
         if status:
             competition.update_status(CompetitionStatus.from_string(status))
-
-        self.competitions.update_competition(competition)
 
         self.competitions.update_competition(competition)
