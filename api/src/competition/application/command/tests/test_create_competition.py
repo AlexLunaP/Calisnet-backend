@@ -9,6 +9,7 @@ from ....application.command.create_competition import CreateCompetition
 from ....domain.exceptions.competition_id_already_exists import (
     CompetitionIdAlreadyExists,
 )
+from ....domain.exceptions.invalid_competition_date import InvalidCompetitionDate
 from ....domain.model.competition import Competition
 from ....domain.model.competition_status import CompetitionStatus
 from ....domain.repository.competitions import Competitions
@@ -91,6 +92,36 @@ class TestCreateCompetition:
         )
 
         with pytest.raises(CompetitionIdAlreadyExists):
+            create_competition_instance.handle(
+                competition_id=str(uuid4()),
+                organizer_id=str(uuid4()),
+                name=mocked_details["name"],
+                description=mocked_details["description"],
+                date=mocked_details["date"],
+                location=mocked_details["location"],
+                image=mocked_details["image"],
+                participant_limit=mocked_details["participant_limit"],
+                penalty_time=mocked_details["penalty_time"],
+                status=mocked_details["status"],
+            )
+
+    def test_do_not_create_competition_if_competition_date_is_past(
+        self, create_competition_instance, mocked_competitions
+    ):
+        mocked_competitions.get_by_id.return_value = None
+
+        mocked_details = {
+            "name": fake.name(),
+            "description": fake.text(),
+            "date": fake.past_datetime().strftime("%Y-%m-%d"),
+            "location": fake.address(),
+            "image": fake.url(),
+            "participant_limit": 10,
+            "penalty_time": 10,
+            "status": CompetitionStatus.OPEN.value,
+        }
+
+        with pytest.raises(InvalidCompetitionDate):
             create_competition_instance.handle(
                 competition_id=str(uuid4()),
                 organizer_id=str(uuid4()),

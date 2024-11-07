@@ -7,6 +7,7 @@ from pytest_mock import MockerFixture
 from .....shared.domain.competition_id import CompetitionId
 from .....shared.domain.user_id import UserId
 from ....domain.exceptions.competition_was_not_found import CompetitionWasNotFound
+from ....domain.exceptions.invalid_competition_date import InvalidCompetitionDate
 from ....domain.model.competition import Competition
 from ....domain.model.competition_date import CompetitionDate
 from ....domain.model.competition_description import CompetitionDescription
@@ -28,13 +29,13 @@ def mocked_competitions(mocker: MockerFixture):
 
 
 @pytest.fixture
-def create_competition_instance(mocked_competitions):
+def update_competition_instance(mocked_competitions):
     return UpdateCompetition(competitions=mocked_competitions)
 
 
 class TestUpdateCompetition:
 
-    def test_update_competition(self, create_competition_instance, mocked_competitions):
+    def test_update_competition(self, update_competition_instance, mocked_competitions):
         competition_id_mock = uuid4()
 
         # Mock behavior of Competitions repository
@@ -53,7 +54,7 @@ class TestUpdateCompetition:
             status=CompetitionStatus.OPEN,
         )
 
-        create_competition_instance.handle(
+        update_competition_instance.handle(
             competition_id=str(competition_id_mock),
             name=fake.name(),
             description=fake.text(),
@@ -68,7 +69,7 @@ class TestUpdateCompetition:
         mocked_competitions.update_competition.assert_called_once()
 
     def test_do_not_update_competition_if_competition_was_not_found(
-        self, create_competition_instance, mocked_competitions
+        self, update_competition_instance, mocked_competitions
     ):
         competition_id_mock = uuid4()
 
@@ -76,11 +77,45 @@ class TestUpdateCompetition:
         mocked_competitions.get_by_id.return_value = None
 
         with pytest.raises(CompetitionWasNotFound):
-            create_competition_instance.handle(
+            update_competition_instance.handle(
                 competition_id=str(competition_id_mock),
                 name=fake.name(),
                 description=fake.text(),
                 date=fake.future_datetime().strftime("%Y-%m-%d"),
+                location=fake.address(),
+                image=fake.url(),
+                participant_limit=10,
+                penalty_time=10,
+                status=CompetitionStatus.OPEN.value,
+            )
+
+    def test_do_not_update_competition_if_competition_date_is_past(
+        self, update_competition_instance, mocked_competitions
+    ):
+        competition_id_mock = uuid4()
+
+        # Mock behavior of Competitions repository
+        mocked_competitions.get_by_id.return_value = Competition(
+            competition_id=CompetitionId(competition_id_mock),
+            organizer_id=UserId(uuid4()),
+            name=CompetitionName(fake.name()),
+            description=CompetitionDescription(fake.text()),
+            date=CompetitionDate.from_string(
+                fake.future_datetime().strftime("%Y-%m-%d")
+            ),
+            location=CompetitionLocation(fake.address()),
+            image=CompetitionImageUrl(fake.url()),
+            participant_limit=ParticipantLimit(10),
+            penalty_time=PenaltyTime(10),
+            status=CompetitionStatus.OPEN,
+        )
+
+        with pytest.raises(InvalidCompetitionDate):
+            update_competition_instance.handle(
+                competition_id=str(competition_id_mock),
+                name=fake.name(),
+                description=fake.text(),
+                date=fake.past_datetime().strftime("%Y-%m-%d"),
                 location=fake.address(),
                 image=fake.url(),
                 participant_limit=10,

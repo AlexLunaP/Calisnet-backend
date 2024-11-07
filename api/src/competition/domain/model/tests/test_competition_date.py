@@ -1,6 +1,5 @@
 from datetime import datetime
 
-import pytest
 from faker import Faker
 
 from ..competition_date import CompetitionDate
@@ -30,9 +29,3 @@ class TestCompetitionDate:
         competition_date = CompetitionDate.from_datetime(expected_value)
 
         assert competition_date.value == expected_value
-
-    def test_invalid_competition_date(self):
-        invalid_date = fake.past_datetime()
-
-        with pytest.raises(CompetitionDate.InvalidCompetitionDate):
-            CompetitionDate(invalid_date)
