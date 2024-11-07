@@ -40,12 +40,14 @@ class TestUpdateUserProfile:
             user_password=UserPassword(fake.password()),
         )
 
+        mocked_profile_image_url = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA..."
+
         update_user_profile_instance.handle(
             user_id=str(user_id_mock),
             full_name=fake.first_name(),
             bio=fake.text(),
             social_links={"instagram": fake.url()},
-            profile_image_url=fake.image(),
+            profile_image_url=mocked_profile_image_url,
         )
 
         mocked_users.update_user_profile.assert_called_once()
