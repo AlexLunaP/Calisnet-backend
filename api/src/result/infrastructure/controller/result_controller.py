@@ -2,7 +2,7 @@ from flask import Blueprint, jsonify, request
 from flask_jwt_extended import get_current_user, jwt_required
 from werkzeug.exceptions import BadRequest, NotFound, Unauthorized
 
-from ..service.result_service import ResultService
+from ...application.service.result_service import ResultService
 
 result_flask_blueprint = Blueprint("results", __name__, url_prefix="/results")
 

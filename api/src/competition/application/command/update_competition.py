@@ -31,7 +31,6 @@ class UpdateCompetition:
         status: str,
     ):
         competition_id_object = CompetitionId.from_string(competition_id)
-        print(f"Date type: {type(date)}, Date value: {date}")  # Debug statement
         competition_date_object = CompetitionDate.from_string(date)
         competition = self.competitions.get_by_id(competition_id_object)
 

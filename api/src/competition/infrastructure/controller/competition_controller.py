@@ -2,7 +2,7 @@ from flask import Blueprint, jsonify, request
 from flask_jwt_extended import get_current_user, jwt_required
 from werkzeug.exceptions import BadRequest, NotFound, Unauthorized
 
-from ..service.competition_service import CompetitionService
+from ...application.service.competition_service import CompetitionService
 
 competition_flask_blueprint = Blueprint(
     "competitions", __name__, url_prefix="/competitions"

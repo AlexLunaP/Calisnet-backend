@@ -2,7 +2,7 @@ from typing import Optional
 
 from dependency_injector.wiring import Provide, inject
 from flask_jwt_extended import get_current_user
-from werkzeug.exceptions import NotFound, Unauthorized
+from werkzeug.exceptions import Unauthorized
 
 from ...application.command.create_participant import CreateParticipant
 from ...application.command.delete_participant import DeleteParticipant
@@ -69,10 +69,6 @@ class ParticipantService:
             raise Unauthorized(
                 "Not allowed to modify the participation of another user."
             )
-
-        participant = self.get_participants(participant_id=participant_id)
-        if not participant:
-            raise NotFound("No participations were found for this participant_id")
 
         self.delete_participant_command.handle(
             participant_id,

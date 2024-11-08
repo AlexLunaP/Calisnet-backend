@@ -2,7 +2,7 @@ from flask import Blueprint, jsonify, request
 from flask_jwt_extended import get_current_user, jwt_required
 from werkzeug.exceptions import BadRequest, NotFound, Unauthorized
 
-from ..service.exercise_service import ExerciseService
+from ...application.service.exercise_service import ExerciseService
 
 exercise_flask_blueprint = Blueprint("exercises", __name__, url_prefix="/exercises")
 

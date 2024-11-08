@@ -5,7 +5,6 @@ import pymongo
 
 from ....shared.domain.competition_id import CompetitionId
 from ...application.participant_dto import ParticipantDTO
-from ...domain.model.participant import Participant
 from ...domain.model.participant_id import ParticipantId
 from ...domain.repository.participants import Participants
 
@@ -26,11 +25,11 @@ class MongoParticipantRepository(Participants):
             }
         )
 
-    def delete_participant(self, participant: Participant) -> None:
+    def delete_participant(self, participant_id, competition_id) -> None:
         self.__participants.delete_one(
             {
-                "participant_id": str(participant.participant_id),
-                "competition_id": str(participant.competition_id),
+                "participant_id": str(participant_id),
+                "competition_id": str(competition_id),
             }
         )
 

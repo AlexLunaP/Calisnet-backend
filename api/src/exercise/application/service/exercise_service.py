@@ -5,9 +5,7 @@ from dependency_injector.wiring import Provide, inject
 from flask_jwt_extended import get_current_user
 from werkzeug.exceptions import NotFound, Unauthorized
 
-from ....competition.infrastructure.service.competition_service import (
-    CompetitionService,
-)
+from ....competition.application.service.competition_service import CompetitionService
 from ...application.command.create_exercise import CreateExercise
 from ...application.command.delete_exercise import DeleteExercise
 from ...application.exercise_dto import ExerciseDTO

@@ -2,9 +2,9 @@ from flask import Blueprint, jsonify, request
 from flask_jwt_extended import create_access_token, get_current_user, jwt_required
 from werkzeug.exceptions import BadRequest, NotFound, Unauthorized
 
+from ...application.service.user_service import UserService
 from ...domain.exceptions.incorrect_password import IncorrectPassword
 from ...domain.exceptions.user_was_not_found import UserWasNotFound
-from ...infrastructure.service.user_service import UserService
 
 user_flask_blueprint = Blueprint("users", __name__, url_prefix="/users")
 
