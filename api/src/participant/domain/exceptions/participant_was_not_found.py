@@ -1,0 +1,2 @@
+class ParticipantWasNotFound(Exception):
+    pass

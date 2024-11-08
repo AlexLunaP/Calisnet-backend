@@ -26,5 +26,5 @@ class Participants(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def delete_participant(self, participant: Participant) -> None:
+    def delete_participant(self, participant_id: str, competition_id: str) -> None:
         raise NotImplementedError
