@@ -1,7 +1,5 @@
-from ....shared.domain.competition_id import CompetitionId
-from ...domain.model.participant import Participant
+from ...domain.exceptions.participant_was_not_found import ParticipantWasNotFound
 from ...domain.model.participant_id import ParticipantId
-from ...domain.model.participant_name import ParticipantName
 from ...domain.repository.participants import Participants
 
 
@@ -14,14 +12,15 @@ class DeleteParticipant:
         participant_id: str,
         competition_id: str,
     ):
-
-        participant_id_object = ParticipantId.from_string(participant_id)
-        competition_id_object = CompetitionId.from_string(competition_id)
-
-        participant = Participant.add(
-            participant_id=participant_id_object,
-            competition_id=competition_id_object,
-            name=ParticipantName.from_string("name"),
+        participant = self.participants.get_by_participant_id(
+            ParticipantId.from_string(participant_id)
         )
+        if not participant:
+            raise ParticipantWasNotFound("Participant not found")
 
-        self.participants.delete_participant(participant)
+        if not any(p["competition_id"] == competition_id for p in participant):
+            raise ParticipantWasNotFound(
+                "Participant not found in the specified competition"
+            )
+
+        self.participants.delete_participant(participant_id, competition_id)
