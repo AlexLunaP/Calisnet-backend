@@ -43,7 +43,7 @@ class CreateCompetition:
         if self.competitions.get_by_id(competition_id_object):
             raise CompetitionIdAlreadyExists("The competition ID already exists")
 
-        if competition_date_object.value < datetime.now():
+        if competition_date_object.value.date() < datetime.now().date():
             raise InvalidCompetitionDate("The date cannot be in the past")
 
         competition = Competition.add(

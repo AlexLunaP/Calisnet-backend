@@ -37,7 +37,7 @@ class UpdateCompetition:
         if not competition:
             raise CompetitionWasNotFound("The competition was not found")
 
-        if competition_date_object.value < datetime.now():
+        if competition_date_object.value.date() < datetime.now().date():
             raise InvalidCompetitionDate("The date cannot be in the past")
 
         if name:
