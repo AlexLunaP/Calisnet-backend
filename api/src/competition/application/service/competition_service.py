@@ -107,11 +107,9 @@ class CompetitionService:
 
     def update_competition(self, competition_dto: CompetitionDTO):
         competition_id = competition_dto["competition_id"]
-        name = competition_dto["name"]
         description = competition_dto["description"]
         date = competition_dto["date"]
         location = competition_dto["location"]
-        image = competition_dto["image"]
         participant_limit = competition_dto.get("participant_limit", None)
         penalty_time = competition_dto["penalty_time"]
         status = competition_dto["status"]
@@ -126,11 +124,9 @@ class CompetitionService:
 
         self.update_competition_command.handle(
             competition_id,
-            name,
             description,
             date,
             location,
-            image,
             participant_limit or 0,
             penalty_time,
             status,
