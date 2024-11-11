@@ -3,12 +3,14 @@ import os
 
 from flask import Flask
 from flask_cors import CORS
+from flask_mail import Mail
 
 from .src import competition, exercise, participant, result, user
 from .src.competition.infrastructure.competition_providers import CompetitionProviders
 from .src.competition.infrastructure.controller.competition_controller import (
     competition_flask_blueprint,
 )
+from .src.config.config import Config
 from .src.exercise.infrastructure.controller.exercise_controller import (
     exercise_flask_blueprint,
 )
@@ -37,10 +39,14 @@ participant_provider.wire(packages=[participant])
 result_provider = ResultProviders()
 result_provider.wire(packages=[result])
 
+mail = Mail()
+
 
 def create_app():
 
     app = Flask(__name__)
+    app.config.from_object(Config)
+
     app.register_blueprint(user_flask_blueprint)
     app.register_blueprint(competition_flask_blueprint)
     app.register_blueprint(exercise_flask_blueprint)
@@ -52,6 +58,8 @@ def create_app():
     app.config["JWT_SECRET_KEY"] = os.environ["JWT_SECRET_KEY"]
     app.config["JWT_ACCESS_TOKEN_EXPIRES"] = datetime.timedelta(days=14)
     jwt_manager.init_app(app)
+
+    mail.init_app(app)
 
     return app
 
